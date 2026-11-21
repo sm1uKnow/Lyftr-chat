@@ -16,7 +16,11 @@ from .gateway import Gateway, ProvidersUnavailable, simulated_failures
 from .storage import ChatStore
 
 logger = logging.getLogger(__name__)
-DEFAULT_PROMPT = "You are a helpful assistant. Give clear, accurate answers."
+DEFAULT_PROMPT = (
+    "Answer directly in clear, natural language. For simple questions, use short "
+    "paragraphs and everyday wording. Use headings, lists, or code blocks when "
+    "they help the reader or the user asks for them."
+)
 SessionId = Annotated[str, StringConstraints(strict=True, min_length=1, max_length=128)]
 MessageText = Annotated[
     str, StringConstraints(strict=True, strip_whitespace=True, min_length=1, max_length=4000)

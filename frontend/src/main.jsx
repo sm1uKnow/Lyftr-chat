@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   ArrowRight, ArrowUp, BookOpen, Check, CircleAlert, Code2, Copy,
   Database, Feather, Layers2, MessageSquare, Plus, Settings2, Sparkles, X, Zap,
@@ -52,10 +54,11 @@ function Metadata({ metadata }) {
 
 function AssistantMessage({ reply, metadata }) {
   const [copyStatus, setCopyStatus] = useState('Copy reply');
+  const body = useRef(null);
 
   async function copyReply() {
     try {
-      await navigator.clipboard.writeText(reply);
+      await navigator.clipboard.writeText(body.current.innerText);
       setCopyStatus('Copied');
     } catch {
       setCopyStatus('Copy unavailable');
@@ -70,7 +73,11 @@ function AssistantMessage({ reply, metadata }) {
           {copyStatus === 'Copied' ? <Check size={16} /> : <Copy size={16} />}
         </button>
       </div>
-      <div className="message-body">{reply}</div>
+      <div className="assistant-body" ref={body}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} skipHtml disallowedElements={['img']}>
+          {reply}
+        </ReactMarkdown>
+      </div>
       <Metadata metadata={metadata} />
     </article>
   );
