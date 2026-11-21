@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      LLM_API_KEYS: ${LLM_API_KEYS:?Copy .env.example to .env and set two API keys}
+      LLM_MODELS: ${LLM_MODELS:-gemini/gemini-3.1-flash-lite}
+      LLM_REQUEST_TIMEOUT_SECONDS: ${LLM_REQUEST_TIMEOUT_SECONDS:-15}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/app.db}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+      ENABLE_FAILURE_SIMULATION: ${ENABLE_FAILURE_SIMULATION:-true}
+      PORT: ${PORT:-8000}
+    ports:
+      - "8000:${PORT:-8000}"
+    volumes:
+      - chat-data:/data
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    ports:
+      - "3000:80"
+volumes:
+  chat-data:
